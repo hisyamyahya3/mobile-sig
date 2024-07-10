@@ -1,0 +1,63 @@
+<template>
+    <div class="page">
+        <div class="navbar navbar-large navbar-transparent">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner navbar-inner-centered-title">
+                <div class="left">
+                    <a class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Framework7</span>
+                    </a>
+                </div>
+                <div class="title sliding">Detail Kategori</div>
+                <div class="title-large">
+                    <div class="title-large-text">Detail Kategori</div>
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="block-title block-title-medium" id="detail-name"></div>
+            <div class="grid grid-cols-2" id="detail-category">
+                
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    export default function (props, ctx) {
+        ctx.$on("pageInit", function () {
+            let nama = localStorage.getItem("categoryName");
+            $("#detail-name").html(nama);
+            let categoryId = props.id
+
+            $.ajax({
+                url: "https://hisyamyahya3.ftiunwaha.my.id/api_sig/api_search_lokasi.php",
+                method: "POST",
+                data: {
+                    id: categoryId,
+                },
+                success: function (result) {
+                    let data = JSON.parse(result)
+                    let temp = "";
+
+                    data.forEach((d) => {
+                        temp += `
+                            <div class="card">
+                                <div class="card-content card-content-padding">
+                                    <h4>${d.nama}</h4>
+                                    <button class="button button-tonal" onclick="detailCategory(${d.id}, '${d.nama}', ${d.lintang}, ${d.bujur}, '${d.alamat}')">Detail</button>
+                                </div>
+                            </div>
+                        `
+                    })
+
+                    $("#detail-category").html(temp)
+                },
+                error: function () {
+                    app.dialog.alert("Tidak Terhubung dengan Server!", "Error");
+                }
+            })
+        })
+        return $render;
+    };
+</script>

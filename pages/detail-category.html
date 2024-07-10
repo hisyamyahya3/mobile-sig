@@ -1,0 +1,54 @@
+<template>
+    <div class="page">
+        <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Framework7</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="page-content" id="petaku"></div>
+        <div class="card" style="margin-top: -270px; z-index: 1;">
+            <div class="card-content card-content-padding">
+                <h2 id="detail-category-name"></h2>
+                <p id="category-name">Kategori :</p>
+                <p id="category-address">Alamat :</p>
+                <div class="grid grid-cols-2 grid-gap">
+                    <button class="button button-tonal" @click="${()=>shareke('wa')}">Whatsapp</button>
+                    <button class="button button-tonal" @click="${()=>shareke('gmaps')}">Google Maps</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    export default function (props, ctx){
+        let $on = ctx.$on;
+        $("pageBeforeIn", () => {
+            let hasilpeta = L.map('petaku').setView([-7.520295197871834, 112.2323087686914], 19);       
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3']}).addTo(hasilpeta);
+
+            let id = props.id
+            let lintang = props.lintang
+            let bujur = props.bujur
+            let alamat = props.alamat
+
+            let marker = L.marker([lintang, bujur]).addTo(hasilpeta);
+            let info = `${alamat}`;
+                marker.bindPopup(info).openPopup();
+
+            hasilpeta.flyTo([lintang, bujur], 18);
+
+            let detail_nama = localStorage.getItem("detailCategoryName")
+            let nama = localStorage.getItem("categoryName")
+            $("#detail-category-name").html(detail_nama)
+            $("#category-name").html(nama)
+            $("#category-address").html(alamat)
+        })
+        return $render
+    }
+</script>
